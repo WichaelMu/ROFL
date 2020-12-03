@@ -36,21 +36,25 @@ public class GLOBAL
         return Input.GetMouseButtonDown(1);
     }
 
+    /// <returns>If the 'E' button was pressed.</returns>
     public static bool E()
     {
         return Input.GetKeyDown(KeyCode.E);
     }
 
+    /// <returns>If the 'Q' button was pressed.</returns>
     public static bool Q()
     {
         return Input.GetKeyDown(KeyCode.Q);
     }
 
+    /// <returns>If the 'W' button was pressed.</returns>
     public static bool W()
     {
         return Input.GetKeyDown(KeyCode.W);
     }
 
+    /// <returns>If the 'R' button was pressed.</returns>
     public static bool R()
     {
         return Input.GetKeyDown(KeyCode.R);

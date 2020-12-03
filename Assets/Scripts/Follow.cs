@@ -45,6 +45,7 @@ public class Follow : MonoBehaviour
 
     void MoveCamera()
     {
+        CamLock = false;
         transform.position += -(new Vector3(Input.GetAxisRaw("Mouse X") * Time.deltaTime, 0, Input.GetAxisRaw("Mouse Y") * Time.deltaTime) * MouseDragSensitivity);
     }
 }
