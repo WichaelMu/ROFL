@@ -5,6 +5,12 @@ public class BrandAbilities : MonoBehaviour
 {
 
     public GameObject AbilityQ;
+    Character character;
+
+    void Start()
+    {
+        character = GetComponent<Character>();
+    }
 
     void Update()
     {
@@ -23,7 +29,6 @@ public class BrandAbilities : MonoBehaviour
 
     void Q()
     {
-        //GameObject shot = Instantiate(AbilityQ, transform.position, Quaternion.LookRotation());
 
     }
 
@@ -39,6 +44,10 @@ public class BrandAbilities : MonoBehaviour
 
     void R()
     {
-
+        if (character.target != null)
+        {
+            GameObject shot = Instantiate(AbilityQ, transform.position, Quaternion.identity);
+            shot.GetComponent<BrandQ>().Set(character.target, 100);
+        }
     }
 }

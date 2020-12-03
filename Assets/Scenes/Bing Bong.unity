@@ -294,6 +294,7 @@ MonoBehaviour:
   MaxHealth: 3015
   AutoDamage: 10
   AutoRange: 10
+  AttackSpeed: 0
 --- !u!114 &1013203590
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -457,6 +458,7 @@ MonoBehaviour:
   MaxHealth: 2015
   AutoDamage: 10
   AutoRange: 10
+  AttackSpeed: 0
 --- !u!114 &1229692383
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -469,7 +471,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c72929d41d514c74685db5d255f809e2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AbilityQ: {fileID: 0}
+  AbilityQ: {fileID: 6561601193973677446, guid: 8d6358a74cb9e854a87e8186f5828379,
+    type: 3}
 --- !u!120 &1229692385
 LineRenderer:
   m_ObjectHideFlags: 0
@@ -580,7 +583,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   LineColor: {r: 0.99607843, g: 0.99607843, b: 0, a: 1}
-  radius: 10
   numSegments: 192
   LineWidth: 0.1
 --- !u!1 &1315440496

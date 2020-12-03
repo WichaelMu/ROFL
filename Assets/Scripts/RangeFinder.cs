@@ -5,9 +5,10 @@ using System.Collections;
 public class RangeFinder : MonoBehaviour
 {
 
+    Character player;
+
     public Color LineColor;
-    [Range(0.1f, 100f)]
-    public float radius = 1.0f;
+    float radius;
     [Range(3, 256)]
     public int numSegments = 128;
     [Range(.1f, 1f)]
@@ -15,6 +16,8 @@ public class RangeFinder : MonoBehaviour
 
     void Start()
     {
+        player = GetComponent<Character>();
+        radius = player.AutoRange;
         DoRenderer();
     }
 

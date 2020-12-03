@@ -5,7 +5,8 @@ public class Character : MonoBehaviour
 {
     public GameObject Auto;
 
-    Transform target;
+    [HideInInspector]
+    public Transform target;
     ClickMove PlayerNav;
 
     public string _name;
@@ -15,6 +16,7 @@ public class Character : MonoBehaviour
     public float AutoDamage = 10f;
     /// <summary>The auto range for this character.</summary>
     public float AutoRange = 10;
+    public float AttackSpeed;
     /// <summary>This amount of money this character has.</summary>
     int money = 1000;
     /// <summary>This character's list of items.</summary>
@@ -83,7 +85,7 @@ public class Character : MonoBehaviour
                 if (c != null && c != this)
                 {
                     //  In range.
-                    if (AutoRange >= Vector3.Distance(transform.position, target.position))
+                    if (GLOBAL.HasReached(transform.position, target.position, AutoRange))
                         AutoAttack(target);
 
                     chasing = true;
@@ -98,7 +100,7 @@ public class Character : MonoBehaviour
 
         //  Chase target.
         if (chasing)
-            if (Vector3.Distance(transform.position, target.position) <= AutoRange)
+            if (GLOBAL.HasReached(transform.position, target.position, AutoRange))
                 AutoAttack(target);
     }
 

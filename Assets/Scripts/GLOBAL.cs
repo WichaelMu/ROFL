@@ -59,4 +59,23 @@ public class GLOBAL
     {
         return Input.GetKeyDown(KeyCode.R);
     }
+
+    public static bool HasReached(Vector3 from, Vector3 to, float limit = .1f)
+    {
+        return Vector3.Distance(from, to) <= limit;
+    }
+
+    /// <summary>
+    /// Moves Rigidbody self towards Transform target at float velocity speed while turning at float TurnRadius.
+    /// </summary>
+    /// <param name="self">The Rigidbody who needs to follow Transform target.</param>
+    /// <param name="target">The Transform target to follow.</param>
+    /// <param name="velocity">The float velocity to travel towards Transform target.</param>
+    /// <param name="TurnRadius">The float TurnRadius to change direction.</param>
+    public static void Homing(Rigidbody self, Transform target, float velocity, float TurnRadius)
+    {
+        Transform _self = self.gameObject.transform;
+        self.velocity = _self.forward * velocity;
+        self.MoveRotation(Quaternion.RotateTowards(_self.rotation, Quaternion.LookRotation(target.position - _self.position), TurnRadius));
+    }
 }

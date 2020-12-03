@@ -1,8 +1,9 @@
-﻿using System;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
-public class AutoProjectile : MonoBehaviour
+public class BrandQ : MonoBehaviour
 {
     Rigidbody rb;
     Transform target;
@@ -18,7 +19,6 @@ public class AutoProjectile : MonoBehaviour
 
     void FixedUpdate()
     {
-
         Travel();
     }
 
@@ -37,14 +37,9 @@ public class AutoProjectile : MonoBehaviour
         Destroy(gameObject);
     }
 
-    /// <summary>
-    /// Sets the parameters for this projectile.
-    /// </summary>
-    /// <param name="t">Transform target to track.</param>
-    /// <param name="Damage">Float damage to deal.</param>
-    public void Set(Transform t, float Damage)
+    public void Set(Transform target, float damage)
     {
-        target = t;
-        damage = Damage;
+        this.target = target;
+        this.damage = damage;
     }
 }

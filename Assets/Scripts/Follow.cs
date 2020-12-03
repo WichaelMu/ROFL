@@ -7,7 +7,7 @@ public class Follow : MonoBehaviour
 
     public Vector3 offset;
 
-    [Range(1, 100)]
+    [Range(1, 300)]
     public int MouseDragSensitivity;
 
     bool CamLock = false;
