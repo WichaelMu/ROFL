@@ -4,11 +4,11 @@ using System.Collections;
 [RequireComponent(typeof(LineRenderer))]
 public class RangeFinder : MonoBehaviour
 {
+    public Mouse Mouse;
 
     Character player;
 
     public Color LineColor;
-    float radius;
     [Range(3, 256)]
     public int numSegments = 128;
     [Range(.1f, 1f)]
@@ -17,11 +17,9 @@ public class RangeFinder : MonoBehaviour
     void Start()
     {
         player = GetComponent<Character>();
-        radius = player.AutoRange;
-        DoRenderer();
     }
 
-    public void DoRenderer()
+    public void DoRenderer(float radius)
     {
         LineRenderer LR = gameObject.GetComponent<LineRenderer>();
         LR.material = new Material(Shader.Find("Legacy Shaders/Particles/Additive"));

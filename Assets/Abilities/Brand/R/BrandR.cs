@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
-public class BrandQ : MonoBehaviour
+public class BrandR : MonoBehaviour
 {
     Rigidbody rb;
     Transform target;

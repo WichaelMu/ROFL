@@ -26,6 +26,7 @@ public class Character : MonoBehaviour
 
     void Start()
     {
+        items = new List<Item>();
         PlayerNav = GetComponent<ClickMove>();
         Spawn();
     }
@@ -43,6 +44,11 @@ public class Character : MonoBehaviour
             GetComponent<Renderer>().material.color = Color.red;
 
         //Debug.Log(_name + " " + CurrentHealth);
+    }
+
+    public ClickMove GetPlayerNav()
+    {
+        return PlayerNav;
     }
 
     void Spawn()
@@ -79,19 +85,24 @@ public class Character : MonoBehaviour
         if (GLOBAL.RightClick())
             if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit hit))
             {
-                target = hit.collider.gameObject.transform;
                 Character c = hit.collider.GetComponent<Character>();
 
+                //  If a character is hit and is not yourself.
                 if (c != null && c != this)
                 {
+                    //  Set the target to the clicked character.
+                    target = c.transform;
+
                     //  In range.
                     if (GLOBAL.HasReached(transform.position, target.position, AutoRange))
-                        AutoAttack(target);
+                        AutoAttack();
 
+                    //  Chase this character.
                     chasing = true;
                 }
                 else
                 {
+                    //  Do nothing and move there.
                     target = null;
                     c = null;
                     chasing = false;
@@ -100,20 +111,25 @@ public class Character : MonoBehaviour
 
         //  Chase target.
         if (chasing)
+        {
+            //  In range.
             if (GLOBAL.HasReached(transform.position, target.position, AutoRange))
-                AutoAttack(target);
+                AutoAttack();
+            else
+                //  Out of range.
+                Invoke("MaintainDistance", .5f);
+        }
     }
 
-    void AutoAttack(Transform t)
+    void AutoAttack()
     {
+        //  Fire an auto.
         GameObject auto = Instantiate(Auto, transform.position, Quaternion.identity);
-        auto.GetComponent<AutoProjectile>().Set(t, AutoDamage);
+        //  Set the auto's target and damage.
+        auto.GetComponent<AutoProjectile>().Set(target, AutoDamage);
 
         //  Stop moving when in range.
         PlayerNav.StopMoving();
-
-        //  Move towards the target after .5 seconds.
-        Invoke("MaintainDistance", .5f);
     }
 
     /// <summary>Move towards the target at maximum range.</summary>
