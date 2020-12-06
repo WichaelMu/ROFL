@@ -10,6 +10,7 @@ public class Mouse : MonoBehaviour
     RangeFinder RF;
     Vector3 offset = new Vector3(0, .25f, 0);
     float range;
+    float TRange = 0;
 
     void Start()
     {
@@ -22,11 +23,14 @@ public class Mouse : MonoBehaviour
         if (Physics.Raycast(r, out RaycastHit hit, 5000))
         {
             transform.position = hit.point + offset;
-            RF.DoRenderer(range);
+            RF.DoRenderer(range, .1f);
         }
 
         //GLOBAL.DrawLine(Vector3.right + new Vector3(transform.position.x - 7, transform.position.y, transform.position.z), Vector3.right + new Vector3(transform.position.x + 7, transform.position.y, transform.position.z), Color.green);
-        GLOBAL.DrawLine((transform.right * -7) + transform.position, (transform.right * 7) + transform.position, Color.green);
+
+        //  Draw a T line.
+        if (TRange != 0)
+            GLOBAL.DrawLine((transform.right * -TRange) + transform.position, (transform.right * TRange) + transform.position, Color.green);
     }
 
     void FixedUpdate()
@@ -37,5 +41,10 @@ public class Mouse : MonoBehaviour
     public void SetRange(float range)
     {
         this.range = range;
+    }
+
+    public void SetTRange(float TRange)
+    {
+        this.TRange = TRange;
     }
 }

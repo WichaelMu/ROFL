@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
 
 public class Character : MonoBehaviour
 {
     public GameObject Auto;
+    Image HealthBar;
+    TextMeshProUGUI NameBox;
 
     [HideInInspector]
     public Transform target;
@@ -29,6 +33,11 @@ public class Character : MonoBehaviour
     {
         items = new List<Item>();
         PlayerNav = GetComponent<ClickMove>();
+
+        HealthBar = GetComponentInChildren<Image>();
+        NameBox = GetComponentInChildren<TextMeshProUGUI>();
+        NameBox.text = _name;
+
         Spawn();
     }
 
@@ -43,6 +52,8 @@ public class Character : MonoBehaviour
 
         if (CurrentHealth <= 0)
             GetComponent<Renderer>().material.color = Color.red;
+
+        HealthBar.fillAmount = CurrentHealth / MaxHealth;
 
         //Debug.Log(_name + " " + CurrentHealth);
     }

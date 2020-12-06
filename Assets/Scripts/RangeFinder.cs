@@ -6,20 +6,13 @@ public class RangeFinder : MonoBehaviour
 {
     public Mouse Mouse;
 
-    Character player;
-
     public Color LineColor;
     [Range(3, 256)]
     public int numSegments = 128;
     [Range(.1f, 1f)]
     public float LineWidth = .1f;
 
-    void Start()
-    {
-        player = GetComponent<Character>();
-    }
-
-    public void DoRenderer(float radius)
+    public void DoRenderer(float radius, float offset = -.75f)
     {
         LineRenderer LR = gameObject.GetComponent<LineRenderer>();
         LR.material = new Material(Shader.Find("Legacy Shaders/Particles/Additive"));
@@ -37,14 +30,9 @@ public class RangeFinder : MonoBehaviour
         {
             float x = radius * Mathf.Cos(theta);
             float z = radius * Mathf.Sin(theta);
-            Vector3 pos = new Vector3(x, 0, z);
+            Vector3 pos = new Vector3(x, offset, z);
             LR.SetPosition(i, pos);
             theta += deltaTheta;
         }
-    }
-
-    public Character GetPlayer()
-    {
-        return player;
     }
 }

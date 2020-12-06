@@ -16,6 +16,8 @@ public class BrandAbilities : MonoBehaviour
     public const int ERANGE = 10;
     public const int RRANGE = 15;
 
+    Vector3 offset = new Vector3(0, -.75f, 0);
+
     char selected;
     bool chasing = false;
 
@@ -48,7 +50,8 @@ public class BrandAbilities : MonoBehaviour
         ClearRange();
         selected = 'A';
         ShowRange(character.AutoRange);
-        GLOBAL.DrawLine(transform.position, RF.Mouse.transform.position, Color.red, .1f, character.AutoRange);
+        RF.Mouse.SetTRange(7);
+        GLOBAL.DrawLine(transform.position + offset, RF.Mouse.transform.position, Color.red, .1f, character.AutoRange);
     }
 
     void Q()
@@ -56,7 +59,7 @@ public class BrandAbilities : MonoBehaviour
         ClearRange();
         selected = 'Q';
         ShowRange(QRANGE);
-        GLOBAL.DrawLine(transform.position, RF.Mouse.transform.position, Color.red, .1f, QRANGE);
+        GLOBAL.DrawLine(transform.position + offset, RF.Mouse.transform.position, Color.red, .1f, QRANGE);
     }
 
     void W()
@@ -65,7 +68,7 @@ public class BrandAbilities : MonoBehaviour
         selected = 'W';
         ShowRange(WRANGE);
         RF.Mouse.SetRange(3);
-        GLOBAL.DrawLine(transform.position, RF.Mouse.transform.position, Color.red, .1f, WRANGE);
+        GLOBAL.DrawLine(transform.position + offset, RF.Mouse.transform.position, Color.red, .1f, WRANGE);
     }
 
     void E()
@@ -73,7 +76,7 @@ public class BrandAbilities : MonoBehaviour
         ClearRange();
         selected = 'E';
         ShowRange(ERANGE);
-        GLOBAL.DrawLine(transform.position, RF.Mouse.transform.position, Color.red, .1f, ERANGE);
+        GLOBAL.DrawLine(transform.position + offset, RF.Mouse.transform.position, Color.red, .1f, ERANGE);
     }
 
     void R()
@@ -81,7 +84,7 @@ public class BrandAbilities : MonoBehaviour
         ClearRange();
         selected = 'R';
         ShowRange(RRANGE);
-        GLOBAL.DrawLine(transform.position, RF.Mouse.transform.position, Color.red, .1f, RRANGE);
+        GLOBAL.DrawLine(transform.position + offset, RF.Mouse.transform.position, Color.red, .1f, RRANGE);
 
         if (GLOBAL.LeftClickHit())
         {
@@ -121,6 +124,7 @@ public class BrandAbilities : MonoBehaviour
         selected = ' ';
         ShowRange(0);
         RF.Mouse.SetRange(0);
+        RF.Mouse.SetTRange(0);
     }
 
     void CheckChase()
