@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Character : MonoBehaviour
@@ -88,7 +89,7 @@ public class Character : MonoBehaviour
                 Character c = hit.collider.GetComponent<Character>();
 
                 //  If a character is hit and is not yourself.
-                if (c != null && c != this)
+                if (GLOBAL.CheckCharacter(this, c))
                 {
                     //  Set the target to the clicked character.
                     target = c.transform;
@@ -124,18 +125,24 @@ public class Character : MonoBehaviour
     void AutoAttack()
     {
         //  Fire an auto.
-        GameObject auto = Instantiate(Auto, transform.position, Quaternion.identity);
+        GameObject auto = Instantiate(Auto, transform.position, transform.rotation);
         //  Set the auto's target and damage.
         auto.GetComponent<AutoProjectile>().Set(target, AutoDamage);
 
         //  Stop moving when in range.
-        PlayerNav.StopMoving();
+        if (PlayerNav == null)
+            throw new NullReferenceException("PlayerNav is set to null for: " + _name);
+        else
+            PlayerNav.StopMoving();
     }
 
     /// <summary>Move towards the target at maximum range.</summary>
     void MaintainDistance()
     {
-        if (target != null)
-            PlayerNav.MoveTo(target.position);
+        if (PlayerNav == null)
+            throw new NullReferenceException("PlayerNav is set to null for: " + _name);
+        else
+            if (target != null)
+                PlayerNav.MoveTo(target.position);
     }
 }

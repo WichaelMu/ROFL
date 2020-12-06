@@ -42,4 +42,9 @@ public class RangeFinder : MonoBehaviour
             theta += deltaTheta;
         }
     }
+
+    public Character GetPlayer()
+    {
+        return player;
+    }
 }

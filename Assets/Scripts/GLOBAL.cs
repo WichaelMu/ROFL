@@ -130,11 +130,22 @@ public class GLOBAL
         LR.endWidth = width;
         LR.SetPosition(0, start);
 
-        Vector3 d = end - start;
-        float dist = Mathf.Clamp(Vector3.Distance(start, end), 0, MaxDistance);
-        end = start + (d.normalized * dist);
+        if (MaxDistance != Mathf.Infinity) {
+            Vector3 d = end - start;
+            float dist = Mathf.Clamp(Vector3.Distance(start, end), 0, MaxDistance);
+            end = start + (d.normalized * dist);
+        }
 
+        LR.SetPosition(0, start);
         LR.SetPosition(1, end);
         GameObject.Destroy(myLine, Time.fixedDeltaTime);
+    }
+
+    /// <param name="self"></param>
+    /// <param name="comparable"></param>
+    /// <returns>If Character self is not Character comparable and Character comparable is not null.</returns>
+    public static bool CheckCharacter(Character self, Character comparable)
+    {
+        return self != comparable && comparable != null;
     }
 }

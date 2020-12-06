@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class BrandAbilities : MonoBehaviour
@@ -8,12 +9,15 @@ public class BrandAbilities : MonoBehaviour
     Character character;
     RangeFinder RF;
 
+    Transform target;
+
     public const int QRANGE = 7;
     public const int WRANGE = 5;
     public const int ERANGE = 10;
     public const int RRANGE = 15;
 
     char selected;
+    bool chasing = false;
 
     void Start()
     {
@@ -35,6 +39,8 @@ public class BrandAbilities : MonoBehaviour
             R();
         if (GLOBAL.RightClick())
             ClearRange();
+
+        CheckChase();
     }
 
     void A()
@@ -77,19 +83,27 @@ public class BrandAbilities : MonoBehaviour
         ShowRange(RRANGE);
         GLOBAL.DrawLine(transform.position, RF.Mouse.transform.position, Color.red, .1f, RRANGE);
 
-        Transform target = null;
-
         if (GLOBAL.LeftClickHit())
         {
             RaycastHit h = GLOBAL.MousePosRay();
-            if (h.collider.GetComponent<Character>() != null)
+            Character c = h.collider.GetComponent<Character>();
+            if (GLOBAL.CheckCharacter(character, c))
+            {
                 target = h.transform;
+                character.GetPlayerNav().MoveTo(c.transform.position);
+                chasing = true;
+            }
+            else
+            {
+                target = null;
+                c = null;
+                chasing = false;
+            }
         }
 
         if (target != null && GLOBAL.HasReached(transform.position, target.position, BrandAbilities.RRANGE))
         {
-            GameObject shot = Instantiate(AbilityQ, transform.position, Quaternion.identity);
-            shot.GetComponent<BrandR>().Set(target, 100);
+            Shoot(selected);
             character.GetPlayerNav().StopMoving();
         }
     }
@@ -107,5 +121,48 @@ public class BrandAbilities : MonoBehaviour
         selected = ' ';
         ShowRange(0);
         RF.Mouse.SetRange(0);
+    }
+
+    void CheckChase()
+    {
+        if (chasing)
+            if (target != null)
+                switch (selected)
+                {
+                    case 'Q':
+                        if (GLOBAL.HasReached(transform.position, target.position, BrandAbilities.QRANGE))
+                            Shoot(selected);
+                        break;
+                    case 'W':
+                        if (GLOBAL.HasReached(transform.position, target.position, BrandAbilities.WRANGE))
+                            Shoot(selected);
+                        break;
+                    case 'E':
+                        if (GLOBAL.HasReached(transform.position, target.position, BrandAbilities.ERANGE))
+                            Shoot(selected);
+                        break;
+                    case 'R':
+                        if (GLOBAL.HasReached(transform.position, target.position, BrandAbilities.RRANGE))
+                            Shoot(selected);
+                        break;
+                }
+    }
+
+    void Shoot(char selected)
+    {
+        switch (selected)
+        {
+            case 'Q':
+                break;
+            case 'W':
+                break;
+            case 'E':
+                break;
+            case 'R':
+                GameObject shot = Instantiate(AbilityQ, transform.position, transform.rotation);
+                shot.GetComponent<BrandR>().Set(target, 100);
+                target = null;
+                break;
+        }
     }
 }
