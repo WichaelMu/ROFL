@@ -27,8 +27,7 @@ public class Follow : MonoBehaviour
 
         if (Input.GetKey(KeyCode.Space))
             FocusOnPlayer();
-
-        if (Input.GetKeyDown(KeyCode.Y))
+        else if (Input.GetKeyDown(KeyCode.Y))
             CamLock = !CamLock;
     }
 

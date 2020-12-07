@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class GLOBAL
 {
+
+    public static Character PlayingAs;
+
     /// <summary>Gets the mouse position + 10.z.</summary>
     public static Vector3 GetMousePosition()
     {

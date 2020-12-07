@@ -26,7 +26,7 @@ public class AutoProjectile : MonoBehaviour
     {
         GLOBAL.Homing(rb, target, velocity, TurnRadius);
 
-        if (GLOBAL.HasReached(transform.position, target.position, .3f))
+        if (GLOBAL.HasReached(transform.position, target.position, transform.localScale.x * .5f))
             DealDamage();
     }
 

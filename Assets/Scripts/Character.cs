@@ -8,7 +8,8 @@ public class Character : MonoBehaviour
 {
     public GameObject Auto;
     Image HealthBar;
-    TextMeshProUGUI NameBox;
+    public TextMeshProUGUI NameBox;
+    public TextMeshProUGUI MoneyBox;
 
     [HideInInspector]
     public Transform target;
@@ -35,10 +36,14 @@ public class Character : MonoBehaviour
         PlayerNav = GetComponent<ClickMove>();
 
         HealthBar = GetComponentInChildren<Image>();
-        NameBox = GetComponentInChildren<TextMeshProUGUI>();
+
         NameBox.text = _name;
 
+        UpdateMoney();
+
         Spawn();
+
+        GLOBAL.PlayingAs = this;
     }
 
     void Update()
@@ -68,14 +73,47 @@ public class Character : MonoBehaviour
         CurrentHealth = MaxHealth;
     }
 
-    void Buy(Item i)
+    public void Buy(Item i)
     {
-        items.Add(i);
+        if (i.price <= money)
+        {
+            items.Add(i);
+            money -= i.price;
+            MoneyBox.text = money.ToString();
+
+            PrintItems();
+            UpdateItemAttributes(i, true);
+        }
     }
 
-    void Sell(Item i)
+    public void Sell(Item i)
+    {
+        if (HasItem(i))
+        {
+            items.Remove(i);
+
+            money += i.SellPrice();
+            MoneyBox.text = money.ToString();
+            UpdateItemAttributes(i, false);
+        }
+        else
+        {
+            Debug.LogWarning(_name + " tried to sell " + i._name + " but cannot.");
+            PrintItems();
+        }
+
+    }
+
+    public void Refund(Item i)
     {
         items.Remove(i);
+
+        ///  IF AND ONLY IF CHARACTER HAS NOT LEFT THE BUYING AREA.
+        if (HasItem(i))
+        {
+            money += i.price;
+            MoneyBox.text = money.ToString();
+        }
     }
 
     void BasicAttack()
@@ -116,7 +154,6 @@ public class Character : MonoBehaviour
                 {
                     //  Do nothing and move there.
                     target = null;
-                    c = null;
                     chasing = false;
                 }
             }
@@ -129,12 +166,14 @@ public class Character : MonoBehaviour
                 AutoAttack();
             else
                 //  Out of range.
-                Invoke("MaintainDistance", .5f);
+                Invoke(nameof(MaintainDistance), .5f);
         }
     }
 
     void AutoAttack()
     {
+        transform.LookAt(target);
+
         //  Fire an auto.
         GameObject auto = Instantiate(Auto, transform.position, transform.rotation);
         //  Set the auto's target and damage.
@@ -155,5 +194,50 @@ public class Character : MonoBehaviour
         else
             if (target != null)
                 PlayerNav.MoveTo(target.position);
+    }
+
+    void UpdateMoney()
+    {
+        MoneyBox.text = money.ToString();
+    }
+
+    void UpdateItemAttributes(Item i, bool buying)
+    {
+        if (buying)
+        {
+            MaxHealth   +=  i._health;
+            AutoDamage  +=  i._damage;
+        }
+        else
+        {
+            MaxHealth   -=  i._health;
+            AutoDamage  -=  i._damage;
+        }
+    }
+
+    void PrintItems()
+    {
+        try
+        {
+            Item d = items[0];
+        }
+        catch (ArgumentOutOfRangeException)
+        {
+            Debug.LogError(_name + " has no items.");
+            return;
+        }
+        Debug.Log("Here are " + _name + "'s items: ");
+        for (int k = 0; k < items.Count; k++)
+            Debug.Log(k + ": " + items[k]._name);
+    }
+
+    /// <param name="i">The item to search for.</param>
+    /// <returns>If this character has Item i.</returns>
+    bool HasItem(Item i)
+    {
+        for (int k = 0; k < items.Count; k++)
+            if (i._name.Equals(items[k]._name))
+                return true;
+        return false;
     }
 }
