@@ -151,4 +151,9 @@ public class GLOBAL
     {
         return self != comparable && comparable != null;
     }
+
+    public static bool X()
+    {
+        return Input.GetKeyDown(KeyCode.X);
+    }
 }

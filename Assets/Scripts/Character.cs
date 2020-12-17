@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
+[RequireComponent(typeof(ClickMove))]
+[RequireComponent(typeof(Shop))]
 public class Character : MonoBehaviour
 {
     public GameObject Auto;
@@ -14,6 +16,7 @@ public class Character : MonoBehaviour
     [HideInInspector]
     public Transform target;
     ClickMove PlayerNav;
+    Shop shop;
 
     public string _name;
     /// <summary>The maximum health.</summary>
@@ -26,29 +29,39 @@ public class Character : MonoBehaviour
     /// <summary>This amount of money this character has.</summary>
     int money = 1000;
     /// <summary>This character's list of items.</summary>
-    List<Item> items;
 
     bool chasing = false;
 
     void Start()
     {
-        items = new List<Item>();
         PlayerNav = GetComponent<ClickMove>();
 
         HealthBar = GetComponentInChildren<Image>();
 
         NameBox.text = _name;
 
-        UpdateMoney();
+        UpdateMoney(money);
 
         Spawn();
 
         GLOBAL.PlayingAs = this;
+
+        shop = GetComponent<Shop>();
+        if (shop)
+            shop.ShowHide(false);
     }
 
     void Update()
     {
         BasicAttack();
+
+        Keyboard();
+    }
+
+    void Keyboard()
+    {
+        if (GLOBAL.X())
+            shop.ShowHide();
     }
 
     public void TakeDamage(float damage)
@@ -77,42 +90,39 @@ public class Character : MonoBehaviour
     {
         if (i.price <= money)
         {
-            items.Add(i);
-            money -= i.price;
-            MoneyBox.text = money.ToString();
+            shop.items.Add(i);
+            UpdateMoney(money -= i.price);
 
-            PrintItems();
+            shop.PrintItems();
             UpdateItemAttributes(i, true);
         }
     }
 
     public void Sell(Item i)
     {
-        if (HasItem(i))
+        if (shop.HasItem(i))
         {
-            items.Remove(i);
+            shop.items.Remove(i);
 
-            money += i.SellPrice();
-            MoneyBox.text = money.ToString();
+            UpdateMoney(money += i.SellPrice());
             UpdateItemAttributes(i, false);
         }
         else
         {
             Debug.LogWarning(_name + " tried to sell " + i._name + " but cannot.");
-            PrintItems();
+            shop.PrintItems();
         }
 
     }
 
     public void Refund(Item i)
     {
-        items.Remove(i);
+        shop.items.Remove(i);
 
         ///  IF AND ONLY IF CHARACTER HAS NOT LEFT THE BUYING AREA.
-        if (HasItem(i))
+        if (shop.HasItem(i))
         {
-            money += i.price;
-            MoneyBox.text = money.ToString();
+            UpdateMoney(money += i.price);
         }
     }
 
@@ -189,18 +199,20 @@ public class Character : MonoBehaviour
     /// <summary>Move towards the target at maximum range.</summary>
     void MaintainDistance()
     {
-        if (PlayerNav == null)
+        if (!PlayerNav)
             throw new NullReferenceException("PlayerNav is set to null for: " + _name);
         else
             if (target != null)
                 PlayerNav.MoveTo(target.position);
     }
 
-    void UpdateMoney()
-    {
-        MoneyBox.text = money.ToString();
-    }
+    void UpdateMoney(int NewMoney) => MoneyBox.text = "$" + NewMoney.ToString();
 
+    /// <summary>
+    /// Updates this character's attributes.
+    /// </summary>
+    /// <param name="i">The item that is being used to update.</param>
+    /// <param name="buying">If this character is buying.</param>
     void UpdateItemAttributes(Item i, bool buying)
     {
         if (buying)
@@ -215,29 +227,4 @@ public class Character : MonoBehaviour
         }
     }
 
-    void PrintItems()
-    {
-        try
-        {
-            Item d = items[0];
-        }
-        catch (ArgumentOutOfRangeException)
-        {
-            Debug.LogError(_name + " has no items.");
-            return;
-        }
-        Debug.Log("Here are " + _name + "'s items: ");
-        for (int k = 0; k < items.Count; k++)
-            Debug.Log(k + ": " + items[k]._name);
-    }
-
-    /// <param name="i">The item to search for.</param>
-    /// <returns>If this character has Item i.</returns>
-    bool HasItem(Item i)
-    {
-        for (int k = 0; k < items.Count; k++)
-            if (i._name.Equals(items[k]._name))
-                return true;
-        return false;
-    }
 }

@@ -7,6 +7,7 @@ public class BrandAbilities : MonoBehaviour
 
     public GameObject AbilityQ;
     Character character;
+    ClickMove CharacterPlayerNav;
     RangeFinder RF;
 
     Transform target;
@@ -25,6 +26,8 @@ public class BrandAbilities : MonoBehaviour
     {
         character = GetComponent<Character>();
         RF = GetComponent<RangeFinder>();
+        if (character)
+            CharacterPlayerNav = character.GetPlayerNav();
     }
 
     void Update()
@@ -93,13 +96,12 @@ public class BrandAbilities : MonoBehaviour
             if (GLOBAL.CheckCharacter(character, c))
             {
                 target = h.transform;
-                character.GetPlayerNav().MoveTo(c.transform.position);
+                CharacterPlayerNav.MoveTo(c.transform.position);
                 chasing = true;
             }
             else
             {
                 target = null;
-                c = null;
                 chasing = false;
             }
         }
@@ -107,7 +109,7 @@ public class BrandAbilities : MonoBehaviour
         if (target != null && GLOBAL.HasReached(transform.position, target.position, BrandAbilities.RRANGE))
         {
             Shoot(selected);
-            character.GetPlayerNav().StopMoving();
+            CharacterPlayerNav.StopMoving();
         }
     }
 
