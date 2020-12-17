@@ -1698,6 +1698,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   AbilityQ: {fileID: 6561601193973677446, guid: 8d6358a74cb9e854a87e8186f5828379,
     type: 3}
+  AbilityW: {fileID: 4693012334668383558, guid: 0f28eceee3745ac4f8b7102664708942,
+    type: 3}
 --- !u!114 &1229692384
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3184,7 +3186,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1946045497}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []

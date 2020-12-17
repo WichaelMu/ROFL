@@ -6,6 +6,7 @@ public class BrandAbilities : MonoBehaviour
 {
 
     public GameObject AbilityQ;
+    public GameObject AbilityW;
     Character character;
     ClickMove CharacterPlayerNav;
     RangeFinder RF;
@@ -13,7 +14,7 @@ public class BrandAbilities : MonoBehaviour
     Transform target;
 
     public const int QRANGE = 7;
-    public const int WRANGE = 5;
+    public const int WRANGE = 8;
     public const int ERANGE = 10;
     public const int RRANGE = 15;
 
@@ -72,6 +73,17 @@ public class BrandAbilities : MonoBehaviour
         ShowRange(WRANGE);
         RF.Mouse.SetRange(3);
         GLOBAL.DrawLine(transform.position + offset, RF.Mouse.transform.position, Color.red, .1f, WRANGE);
+
+        if (GLOBAL.LeftClickHit())
+        {
+            target = RF.Mouse.transform;
+            CharacterPlayerNav.MoveTo(target.position);
+            chasing = true;
+
+            if (GLOBAL.HasReached(transform.position, target.position, BrandAbilities.WRANGE))
+                Shoot(selected);
+        }
+
     }
 
     void E()
@@ -107,10 +119,7 @@ public class BrandAbilities : MonoBehaviour
         }
 
         if (target != null && GLOBAL.HasReached(transform.position, target.position, BrandAbilities.RRANGE))
-        {
             Shoot(selected);
-            CharacterPlayerNav.StopMoving();
-        }
     }
 
     /// <summary>Shows a range on this character.</summary>
@@ -156,19 +165,24 @@ public class BrandAbilities : MonoBehaviour
 
     void Shoot(char selected)
     {
+        GameObject shot;
         switch (selected)
         {
             case 'Q':
                 break;
             case 'W':
+                shot = Instantiate(AbilityW, RF.Mouse.transform.position, transform.rotation);
+                shot.GetComponent<BrandW>().Set(1000);
                 break;
             case 'E':
                 break;
             case 'R':
-                GameObject shot = Instantiate(AbilityQ, transform.position, transform.rotation);
+                shot = Instantiate(AbilityQ, transform.position, transform.rotation);
                 shot.GetComponent<BrandR>().Set(target, 100);
-                target = null;
                 break;
         }
+
+        CharacterPlayerNav.StopMoving();
+        target = null;
     }
 }
