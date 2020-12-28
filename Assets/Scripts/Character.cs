@@ -6,8 +6,7 @@ using TMPro;
 
 [RequireComponent(typeof(ClickMove))]
 [RequireComponent(typeof(Shop))]
-public class Character : MonoBehaviour
-{
+public class Character : MonoBehaviour {
     public GameObject Auto;
     Image HealthBar;
     public TextMeshProUGUI NameBox;
@@ -18,22 +17,29 @@ public class Character : MonoBehaviour
     ClickMove PlayerNav;
     Shop shop;
 
+    [Header("Characteristics")]
     public string _name;
     /// <summary>The maximum health.</summary>
     public float MaxHealth = 2015;
+    /// <summary>The current health for this character.</summary>
     float CurrentHealth;
+    /// <summary>The damage given in auto attacks.</summary>
     public float AutoDamage = 10f;
     /// <summary>The auto range for this character.</summary>
     public float AutoRange = 10;
+    /// <summary>The attack speed for auto attacks.</summary>
     public float AttackSpeed;
+    /// <summary>The physical resistance protecting this character.</summary>
+    public int armour;
+    /// <summary>The magic resistance protecting this character.</summary>
+    public int MR;
     /// <summary>This amount of money this character has.</summary>
     int money = 1000;
     /// <summary>This character's list of items.</summary>
 
     bool chasing = false;
 
-    void Start()
-    {
+    void Start() {
         PlayerNav = GetComponent<ClickMove>();
 
         HealthBar = GetComponentInChildren<Image>();
@@ -51,21 +57,18 @@ public class Character : MonoBehaviour
             shop.ShowHide(false);
     }
 
-    void Update()
-    {
+    void Update() {
         BasicAttack();
 
         Keyboard();
     }
 
-    void Keyboard()
-    {
+    void Keyboard() {
         if (GLOBAL.X())
             shop.ShowHide();
     }
 
-    public void TakeDamage(float damage)
-    {
+    public void TakeDamage(float damage) {
         CurrentHealth -= damage;
 
         if (CurrentHealth <= 0)
@@ -76,20 +79,16 @@ public class Character : MonoBehaviour
         //Debug.Log(_name + " " + CurrentHealth);
     }
 
-    public ClickMove GetPlayerNav()
-    {
+    public ClickMove GetPlayerNav() {
         return PlayerNav;
     }
 
-    void Spawn()
-    {
+    void Spawn() {
         CurrentHealth = MaxHealth;
     }
 
-    public void Buy(Item i)
-    {
-        if (i.price <= money)
-        {
+    public void Buy(Item i) {
+        if (i.price <= money) {
             shop.items.Add(i);
             UpdateMoney(money -= i.price);
 
@@ -98,36 +97,29 @@ public class Character : MonoBehaviour
         }
     }
 
-    public void Sell(Item i)
-    {
-        if (shop.HasItem(i))
-        {
+    public void Sell(Item i) {
+        if (shop.HasItem(i)) {
             shop.items.Remove(i);
 
             UpdateMoney(money += i.SellPrice());
             UpdateItemAttributes(i, false);
-        }
-        else
-        {
+        } else {
             Debug.LogWarning(_name + " tried to sell " + i._name + " but cannot.");
             shop.PrintItems();
         }
 
     }
 
-    public void Refund(Item i)
-    {
+    public void Refund(Item i) {
         shop.items.Remove(i);
 
         ///  IF AND ONLY IF CHARACTER HAS NOT LEFT THE BUYING AREA.
-        if (shop.HasItem(i))
-        {
+        if (shop.HasItem(i)) {
             UpdateMoney(money += i.price);
         }
     }
 
-    void BasicAttack()
-    {
+    void BasicAttack() {
         #region ignore
         //Ray ray = new Ray(transform.position, Camera.main.ScreenToWorldPoint(Input.mousePosition));
         //if (Physics.Raycast(ray, out RaycastHit hit, range, 9))
@@ -143,13 +135,11 @@ public class Character : MonoBehaviour
         #endregion
 
         if (GLOBAL.RightClick())
-            if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit hit))
-            {
+            if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit hit)) {
                 Character c = hit.collider.GetComponent<Character>();
 
                 //  If a character is hit and is not yourself.
-                if (GLOBAL.CheckCharacter(this, c))
-                {
+                if (GLOBAL.CheckCharacter(this, c)) {
                     //  Set the target to the clicked character.
                     target = c.transform;
 
@@ -159,9 +149,7 @@ public class Character : MonoBehaviour
 
                     //  Chase this character.
                     chasing = true;
-                }
-                else
-                {
+                } else {
                     //  Do nothing and move there.
                     target = null;
                     chasing = false;
@@ -169,8 +157,7 @@ public class Character : MonoBehaviour
             }
 
         //  Chase target.
-        if (chasing)
-        {
+        if (chasing) {
             //  In range.
             if (GLOBAL.HasReached(transform.position, target.position, AutoRange))
                 AutoAttack();
@@ -180,8 +167,7 @@ public class Character : MonoBehaviour
         }
     }
 
-    void AutoAttack()
-    {
+    void AutoAttack() {
         transform.LookAt(target);
 
         //  Fire an auto.
@@ -197,13 +183,12 @@ public class Character : MonoBehaviour
     }
 
     /// <summary>Move towards the target at maximum range.</summary>
-    void MaintainDistance()
-    {
+    void MaintainDistance() {
         if (!PlayerNav)
             throw new NullReferenceException("PlayerNav is set to null for: " + _name);
         else
             if (target != null)
-                PlayerNav.MoveTo(target.position);
+            PlayerNav.MoveTo(target.position);
     }
 
     void UpdateMoney(int NewMoney) => MoneyBox.text = "$" + NewMoney.ToString();
@@ -213,18 +198,19 @@ public class Character : MonoBehaviour
     /// </summary>
     /// <param name="i">The item that is being used to update.</param>
     /// <param name="buying">If this character is buying.</param>
-    void UpdateItemAttributes(Item i, bool buying)
-    {
-        if (buying)
-        {
-            MaxHealth   +=  i._health;
-            AutoDamage  +=  i._damage;
-        }
-        else
-        {
-            MaxHealth   -=  i._health;
-            AutoDamage  -=  i._damage;
+    void UpdateItemAttributes(Item i, bool buying) {
+        if (buying) {
+            MaxHealth += i._health;
+            AutoDamage += i._damage;
+            armour += i.armour;
+            MR += i.MR;
+            AttackSpeed += i.AttackSpeed;
+        } else {
+            MaxHealth -= i._health;
+            AutoDamage -= i._damage;
+            armour -= i.armour;
+            MR -= i.MR;
+            AttackSpeed -= i.AttackSpeed;
         }
     }
-
 }
