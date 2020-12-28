@@ -10,8 +10,11 @@ public class Item : MonoBehaviour
     public int price;
 
     [Header("Attributes")]
-    public float _health;
-    public float _damage;
+    public int _health;
+    public int _damage;
+    public int armour;
+    public int MR;
+    public int AttackSpeed;
 
     void Start()
     {
